@@ -1,0 +1,43 @@
+# systemd unit file for the rpi_autodisplay Python Script
+[Unit]
+
+# Human readable name of the unit
+Description=Python Display Service
+
+# Starting after System is online and docker is running
+# Only needed if MQTT is used
+Wants=network-online.target
+After=network-online.target
+# Only needed if MQTT Broker is running in a Docker Container on the same Host
+#After=docker.service
+#After=docker.socket
+
+[Service]
+
+# Command to execute when the service is started
+# Without MQTT
+ExecStart=/usr/bin/python3 /usr/local/sbin/rpi_autodisplay.py
+# Command to execute when the service is started
+# With MQTT
+#ExecStart=/usr/bin/python3 /usr/local/sbin/rpi_autodisplay-mqtt.py
+
+# Disable Python's buffering of STDOUT and STDERR, so that output from the
+# service shows up immediately in systemd's logs
+Environment=PYTHONUNBUFFERED=1
+
+# Automatically restart the service if it crashes
+Restart=on-failure
+
+# Our service will notify systemd once it is up and running
+Type=notify
+
+# Use a dedicated user to run our service
+User=root
+
+
+[Install]
+
+# Tell systemd to automatically start this service when the system boots
+# (assuming the service is enabled)
+WantedBy=default.target
+
