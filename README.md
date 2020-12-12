@@ -87,3 +87,6 @@ Just test it with a flaslight and with covering the sensor with your hand. You s
 
 # Whole Documentation of that Project:
 More Informations here (Sorry, it's german, but just use your browsers transaltion tool): [Raspberry Pi Touchdisplay Helligkeit automatisch justieren](https://www.laub-home.de/wiki/Raspberry_Pi_Touchdisplay_Helligkeit_automatisch_justieren)
+
+# Questions, Help, Feedback
+if you have any questions, you need help, or just have feedback for my first project here, just let me know!
