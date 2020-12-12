@@ -34,6 +34,11 @@ def sensor():
   global lux
   i2c = board.I2C()
   sensor = adafruit_bh1750.BH1750(i2c)
+  i = 0
+  while sensor.lux <= lux_level_1[0] and i < 15:
+    time.sleep(2)
+    i += 1
+    #print(i)
   lux = sensor.lux
   #print("%.2f Lux" % lux)
 
