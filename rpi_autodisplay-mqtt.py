@@ -50,9 +50,9 @@ def publish(topic, payload):
   client.publish(publish_topic + "/" + topic,payload,qos,retain_message)
 
 def on_connect(client, userdata, flags, rc):
-    print("MQTT Connection established, Returned code=",rc)
-    client.subscribe([(publish_topic + "/" + hostname + "/dp_brightness_adjust", qos),\
-      (publish_topic + "/" + hostname + "/dp_power_switch", qos)])
+  print("MQTT Connection established, Returned code=",rc)
+  client.subscribe([(publish_topic + "/" + hostname + "/dp_brightness_adjust", qos),\
+    (publish_topic + "/" + hostname + "/dp_power_switch", qos)])
 
 def on_message(client, userdata, message):
   global adjust
