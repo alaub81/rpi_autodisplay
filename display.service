@@ -20,6 +20,8 @@ ExecStart=/usr/bin/python3 /usr/local/sbin/rpi_autodisplay.py
 # Command to execute when the service is started
 # With MQTT
 #ExecStart=/usr/bin/python3 /usr/local/sbin/rpi_autodisplay-mqtt.py
+# With Homie MQTT Convention Support
+#ExecStart=/usr/bin/python3 /usr/local/sbin/rpi_autodisplay-homie.py
 
 # Disable Python's buffering of STDOUT and STDERR, so that output from the
 # service shows up immediately in systemd's logs
