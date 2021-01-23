@@ -28,12 +28,12 @@ retain_message = True
 # Retry to connect to mqtt broker
 mqttretry = 5
 # time in seconds how long display will be on, if it is auto off
-ontime = 60
+ontime = 30
 
 ### do the stuff
 print('Starting up Display Service ...')
 backlight = Backlight()
-backlight.fade_duration = 0.5
+backlight.fade_duration = 0.75
 
 # just give some used variables an initial value
 lastvalue = 0
@@ -58,7 +58,6 @@ def on_message(client, userdata, message):
   global adjust
   global powerswitch
   global lastvalue
-  #time.sleep(1)
   if "dp_brightness_adjust" in message.topic:
     #print("adjust value", str(message.payload.decode("utf-8")))
     adjust = float(message.payload.decode("utf-8"))
@@ -142,15 +141,15 @@ while True:
       #print("Display auto")
     elif (powerswitch[0]) == "openHAB" and (powerswitch[1]) == "On" and lux < (lux_level_1[0]):
       backlight.power = True
-      #print("Overule Power for time", ontime)
       time.sleep(ontime)
       backlightpower(True)
+      #print("Overule Power for time", ontime)
     elif lux < (lux_level_1[0]) and backlight.power == True:
-      #print("auto aus", lux)
       backlightpower(False)
+      #print("auto aus", lux)
     elif lux > (lux_level_1[0]) and backlight.power == False:
-      #print("auto an", lux)
       backlightpower(True)
+      #print("auto an", lux)
 
     # set lux levels to brightness levels (incl. adjust value) if backlight is on
     if backlight.power == True:
