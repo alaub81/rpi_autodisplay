@@ -181,7 +181,11 @@ while True:
     #print("powerswitchstate: ", powerswitchstate)
     #print("powerswitch: ", powerswitch)
     if (powerswitch) == "Null" and (powerswitchstate) == "false":
-      time.sleep(1)
+      if backlightpowerstate == True:
+        backlightpower(False)
+        #publish("display/powerswitch/powerstate","false")
+        #print("Display off")
+      #time.sleep(1)
       #print("empty")
     elif (powerswitch) == "false":
       if backlightpowerstate == True:
