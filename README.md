@@ -1,6 +1,14 @@
 # rpi_autodisplay
 I have been looking into how to automatically adjust the brightness of the official 7" Raspberry Pi touchdisplay to the ambient brightness. This should behave similar to a smartphone or modern laptop screen and turn off the display when it is completely dark. So, if it is super bright in a room (in lux), then the brightness value (in %) should be accordingly high. If it is rather dark, then the display should also be dimmed. In addition, I would like to have a connection to openHAB and here to adjust the automatic brightness and also the display on and off. As a brightness sensor I will use the BH1750 sensor and as a software solution comes a Python script with the appropriate libraries to the course.
 
+# Features
+* Autobrightness Controll of your Raspberry Pi's Touchdisplay
+* Automatic Display Power Off when it is dark
+* MQTT Support
+* Homie MQTT Convetion Support
+  * openHAB MQTT autodiscovery functional
+* possible openHAB integration
+
 # Requirements
 * Raspberry Pi (2, 3, 4)
 * Raspberry Pi's official 7" touchdisplay
@@ -9,7 +17,8 @@ I have been looking into how to automatically adjust the brightness of the offic
 * python3
 * python3 libraries 
 * i2c bus
-* optional: MQTT Broker and openHAB (only for `rpi_autodisplay-mqtt.py`)
+* optional: MQTT Broker and openHAB (only for `rpi_autodisplay-mqtt.py` and `rpi_autodisplay-homie.py`)
+* optional: openHAB Setup or other homie MQTT compatible Smart Home System
 
 ```bash
 raspi-config nonint do_i2c 0
@@ -36,7 +45,7 @@ systemctl enable display.service
 systemctl start display.service
 ```
 ## rpi_autodisplay-mqtt.py
-If you like to use the mqtt version, you have to configure the MQTT connection in the `/usr/local/sbin/rpi_autodisplay-mqtt.py`:
+If you like to use the mqtt or homie version, you have to configure the MQTT connection settings in the `/usr/local/sbin/rpi_autodisplay-mqtt.py` or in `/usr/local/sbin/rpi_autodisplay-homie.py`:
 ```python3
 # MQTT Config
 broker = "FQDN / IP ADDRESS" # --> Broker FQDN or IP address
@@ -50,7 +59,21 @@ insecure = True # --> if using a self signed certificate
 qos = 1 # --> MQTT QoS level (0, 1, 2) 
 retain_message = True # --> publish as a retained mqtt message (True, False)
 ```
-And you have to edit the `/etc/systemd/system/display.service`. Here you need to change the stuffe for the `rpi_autodisplay-mqtt.py`
+for Homie MQTT Convention Script
+```python3
+# MQTT Config
+broker = "FQDN / IP ADDRESS" # --> Broker FQDN or IP address
+port = 8883 # --> MQTT Broker TCP Port (8883 for the TLS Port, 1883 for the standard Port)
+mqttclientid = "clientid-dp-homie" # --> MQTT Client ID, should be unique.
+clientid = "clientid-dp" # --> Homie Clientid, should be unique.
+clientname = "Clientname Display" # --> Homie, human readable client name for the clientid
+username = "mosquitto" # --> MQTT username, if authentication is used
+password = "password" # --> MQTT password, if authentication is used
+insecure = True # --> if using a self signed certificate
+qos = 1 # --> MQTT QoS level (0, 1, 2), must be at least 1 for the homie Convention!
+retain_message = True # --> publish as a retained mqtt message (True, False), must be True for the homie Convention!
+```
+And you have to edit the `/etc/systemd/system/display.service`. Here you need to change the stuff for the `rpi_autodisplay-mqtt.py`
 ```bash
 ...
 
@@ -70,6 +93,8 @@ After=network-online.target
 # Command to execute when the service is started
 # With MQTT
 ExecStart=/usr/bin/python3 /usr/local/sbin/rpi_autodisplay-mqtt.py
+# With Homie MQTT Convention Support
+#ExecStart=/usr/bin/python3 /usr/local/sbin/rpi_autodisplay-homie.py
 
 ... 
 ```
@@ -86,6 +111,7 @@ Check if the service is runnig:
 systemctl status display.service
 ```
 Just test it with a flaslight and with covering the sensor with your hand. You should see the display changing its brightness and even going off and on.
+If you are using the MQTT Scripts just check for example with MQTT Explorer if the topics and payloads are published.
 
 # Whole Documentation of that Project:
 More Informations here (Sorry, it's german, but just use your browsers transaltion tool): [Raspberry Pi Touchdisplay Helligkeit automatisch justieren](https://www.laub-home.de/wiki/Raspberry_Pi_Touchdisplay_Helligkeit_automatisch_justieren)
