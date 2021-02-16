@@ -74,7 +74,7 @@ def on_connect(client, userdata, flags, rc):
   publish("display/brightnessadjust/$name","Display Brightness Adjustment")
   publish("display/brightnessadjust/$datatype","integer")
   publish("display/brightnessadjust/$unit","%")
-  publish("display/brightnessadjust/$format","0:200")
+  publish("display/brightnessadjust/$format","0:100")
   publish("display/brightnessadjust/$retained","true")
   publish("display/brightnessadjust/$settable","true")
   publish("bh1750/$name","BH1750 Sensor")
@@ -98,7 +98,7 @@ def on_message(client, userdata, message):
     publish("display/brightnessadjust", message.payload.decode("utf-8"))
   if message.topic == ("homie/" + clientid + "/display/brightnessadjust"):
     #print("adjust value from state", message.payload.decode("utf-8"))
-    adjust = (float(message.payload.decode("utf-8"))/100)
+    adjust = (float(message.payload.decode("utf-8"))/100*2)
     #print("adjust: ",adjust)
     lastvalue = 0
   if "powerswitch/set" in message.topic:
