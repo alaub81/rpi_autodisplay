@@ -14,6 +14,17 @@ lux_level_5 = 300, 65
 lux_level_6 = 450, 75
 lux_level_7 = 600, 85
 lux_level_8 = 800, 100
+"""
+# my recommended values:
+lux_level_1 = 0.1, 40
+lux_level_2 = 20, 45
+lux_level_3 = 100, 50
+lux_level_4 = 200, 75
+lux_level_5 = 300, 85
+lux_level_6 = 450, 90
+lux_level_7 = 600, 95
+lux_level_8 = 800, 100
+"""
 # MQTT Config
 broker = "FQDN / IP ADDRESS"
 port = 8883
