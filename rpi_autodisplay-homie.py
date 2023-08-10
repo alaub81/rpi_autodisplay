@@ -92,7 +92,7 @@ def on_connect(client, userdata, flags, rc):
   publish("bh1750/$properties","illuminance")
   publish("bh1750/illuminance/$name","Illuminance")
   publish("bh1750/illuminance/$datatype","float")
-  publish("bh1750/illuminance/$unit","lux")
+  publish("bh1750/illuminance/$unit","lx")
   publish("bh1750/illuminance/$retained","true")
   publish("bh1750/illuminance/$settable","false")
   # homie state ready
