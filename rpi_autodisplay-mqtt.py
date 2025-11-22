@@ -46,10 +46,18 @@ print('Starting up Display Service ...')
 backlight = Backlight()
 backlight.fade_duration = 0.75
 
+# BH1750 Sensor init
+i2c = board.I2C()
+bh1750_sensor = adafruit_bh1750.BH1750(i2c)
+  
 # just give some used variables an initial value
 lastvalue = 0
 lastlux = 0
 powerswitch = "Null"
+powerswitchstate = "Null"
+dark_threshold = 1
+dark_interval = 300
+last_dark_publish = 0
 # if you like to raise all DISP_BRIGHTNESS
 # set values betwenn 0.2 (lower brightness) and 2 (higher brightness)
 # will be configured through MQTT Topic
@@ -81,17 +89,18 @@ def on_message(client, userdata, message):
 def sensor():
   global lux
   global lastlux
-  i2c = board.I2C()
-  sensor = adafruit_bh1750.BH1750(i2c)
-  i = 0
-  while sensor.lux <= lux_level_1[0] and i < 15:
-    time.sleep(2)
-    i += 1
-    #print(i)  
-  lux = sensor.lux
-  if ("%.0f" % lastlux) != ("%.0f" % lux) or lux <= 1:
-   publish("lux", "%.2f" % lux)
-   lastlux = lux
+  global last_dark_publish
+  global dark_threshold
+  global dark_interval
+  
+  lux = bh1750_sensor.lux
+  now = time.time()
+  
+  # Bright: only send if the rounded value changes
+  if lux > dark_threshold:
+    if ("%.0f" % lastlux) != ("%.0f" % lux):
+      publish("bh1750/illuminance", "%.2f" % lux)
+      lastlux = lux
 
 def backlightpower(state):
   backlight.power = state
