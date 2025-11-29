@@ -40,6 +40,8 @@ retain_message = True
 mqttretry = 5
 # time in seconds how long display will be on, if it is auto off
 ontime = 30
+# Automatic (lux-based) on/off
+automode = True
 
 ### do the stuff
 print('Starting up Display Service ...')
@@ -206,7 +208,7 @@ while True:
     backlightpowerstate = backlight.power
     #print("powerswitchstate: ", powerswitchstate)
     #print("powerswitch: ", powerswitch)
-    if (powerswitch) == "Null" and (powerswitchstate) == "false":
+    if (powerswitch) == "Null" and (powerswitchstate) == "false" and automode:
       if backlightpowerstate == True:
         backlightpower(False)
         #publish("display/powerswitch/powerstate","false")
@@ -222,17 +224,23 @@ while True:
       backlightpower(True)
       publish("display/powerswitch/powerstate","true")
       #print("Display auto")
-    elif (powerswitch) == "true" and backlightpowerstate == False and lux < (lux_level_1[0]):
-      backlightpower(True)
-      time.sleep(ontime)
-      powerswitch = "Null"
-      backlightpower(False)
-      #print("Overule Power for time", ontime)
-    elif lux < (lux_level_1[0]) and backlightpowerstate == True:
+    elif (powerswitch) == "true" and backlightpowerstate == False:
+      if automode and lux < (lux_level_1[0]):
+          # alter 30s-Override nur im AUTO_MODE
+          backlightpower(True)
+          time.sleep(ontime)
+          powerswitch = "Null"
+          backlightpower(False)
+          #print("Overule Power for time", ontime)
+      else:
+          # reines manuelles Einschalten
+          backlightpower(True)
+          publish("display/powerswitch/powerstate","true")
+    elif automode and lux < (lux_level_1[0]) and backlightpowerstate == True:
       backlightpower(False)
       publish("display/powerswitch/powerstate","true")
       #print("Display auto aus", lux)
-    elif lux > (lux_level_1[0]) and backlightpowerstate == False:
+    elif automode and lux > (lux_level_1[0]) and backlightpowerstate == False:
       backlightpower(True)
       publish("display/powerswitch/powerstate","true")
       #print("Display auto an", lux)
