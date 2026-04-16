@@ -68,8 +68,8 @@ adjust = 1
 def publish(topic, payload):
   client.publish(publish_topic + "/" + topic,payload,qos,retain_message)
 
-def on_connect(client, userdata, flags, rc):
-  print("MQTT Connection established, Returned code=",rc)
+def on_connect(client, userdata, flags, reason_code, properties):
+  print("MQTT Connection established, Returned code=",reason_code)
   client.subscribe([(publish_topic + "/" + hostname + "/dp_brightness_adjust", qos),\
     (publish_topic + "/" + hostname + "/dp_power_switch", qos)])
 
@@ -124,7 +124,10 @@ def brightness(level):
 mqttattempts = 0
 while mqttattempts < mqttretry:
   try:
-    client=mqtt.Client(clientid)
+    client = mqtt.Client(
+      callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
+      client_id=clientid,
+    )
     client.username_pw_set(username, password)
     client.tls_set(cert_reqs=ssl.CERT_NONE) #no client certificate needed
     client.tls_insecure_set(insecure)

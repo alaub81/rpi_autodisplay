@@ -25,7 +25,7 @@ raspi-config nonint do_i2c 0
 apt install -y python3 python3-smbus i2c-tools python3-pip python3-systemd
 # for MQTT Support
 apt install -y python3-paho-mqtt
-pip3 install --user adafruit-circuitpython-bh1750 rpi-backlight
+pip3 install --user --break-system-packages adafruit-circuitpython-bh1750 rpi-backlight
 ```
 # Installation
 ```bash
@@ -40,7 +40,7 @@ chmod +x /usr/local/sbin/rpi_autodisplay*.py
 ## rpi_autodisplay.py
 if you just like to use the stuff without MQTT you do not need to configure anything. Just enable the systemd service.
 ```bash
-systemd daemon-reload
+systemctl daemon-reload
 systemctl enable display.service
 systemctl start display.service
 ```

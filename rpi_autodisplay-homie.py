@@ -70,8 +70,8 @@ adjust = 1
 def publish(topic, payload):
   client.publish("homie/" + clientid + "/" + topic,payload,qos,retain_message)
 
-def on_connect(client, userdata, flags, rc):
-  print("MQTT Connection established, Returned code=",rc)
+def on_connect(client, userdata, flags, reason_code, properties):
+  print("MQTT Connection established, Returned code=",reason_code)
   client.subscribe("homie/" + clientid + "/display/#",qos)
   # homie client config
   publish("$state","init")
@@ -128,8 +128,8 @@ def on_message(client, userdata, message):
     #print("MQTT Powerswitch from state", message.payload.decode("utf-8"))
     powerswitchstate = (message.payload.decode("utf-8"))
 
-def on_disconnect(client, userdata, rc):
-  print("MQTT Connection disconnected, Returned code=",rc)
+def on_disconnect(client, userdata, flags, reason_code, properties):
+  print("MQTT Connection disconnected, Returned code=",reason_code)
 
 def sensor():
   global lux
@@ -176,7 +176,10 @@ def brightness(level):
 mqttattempts = 0
 while mqttattempts < mqttretry:
   try:
-    client=mqtt.Client(clientid)
+    client = mqtt.Client(
+      callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
+      client_id=mqttclientid,
+    )
     client.username_pw_set(username, password)
     client.tls_set(cert_reqs=ssl.CERT_NONE) #no client certificate needed
     client.tls_insecure_set(insecure)
