@@ -42,6 +42,9 @@ mqttretry = 5
 ontime = 30
 # Automatic (lux-based) on/off
 automode = True
+# Hysterese fuer Auto On/Off
+dark_off_threshold = 0.1
+bright_on_threshold = 0.6
 
 ### do the stuff
 print('Starting up Display Service ...')
@@ -51,7 +54,7 @@ backlight.fade_duration = 0.75
 # BH1750 Sensor init
 i2c = board.I2C()
 bh1750_sensor = adafruit_bh1750.BH1750(i2c)
-  
+
 # just give some used variables an initial value
 lastvalue = 0
 lastlux = 0
@@ -239,11 +242,11 @@ while True:
           # reines manuelles Einschalten
           backlightpower(True)
           publish("display/powerswitch/powerstate","true")
-    elif automode and lux < (lux_level_1[0]) and backlightpowerstate == True:
+    elif automode and backlightpowerstate == True and lux < dark_off_threshold:
       backlightpower(False)
       publish("display/powerswitch/powerstate","true")
       #print("Display auto aus", lux)
-    elif automode and lux > (lux_level_1[0]) and backlightpowerstate == False:
+    elif automode and backlightpowerstate == False and lux > bright_on_threshold:
       backlightpower(True)
       publish("display/powerswitch/powerstate","true")
       #print("Display auto an", lux)

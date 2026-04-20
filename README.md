@@ -10,7 +10,7 @@ I have been looking into how to automatically adjust the brightness of the offic
 * possible openHAB integration
 
 # Requirements
-* Raspberry Pi (2, 3, 4)
+* Raspberry Pi (2, 3, 4, 5)
 * Raspberry Pi's official 7" touchdisplay
 * BH1750 light sensor
 * Raspbian installation
